@@ -46,17 +46,19 @@ var questions = [
 var quizLoop;
 
 // declare html element variables
-var displayTimerDiv = document.querySelector("#timer");
+var displayTimerDiv = document.querySelector("#timer-text");
 var displayQuestionDiv = document.querySelector("#question");
 var startBtn = document.querySelector("#startBtn");
+var pathRemaining = document.querySelector("#path-remaining");
 
 // declare event lister to begin quiz
 startBtn.addEventListener("click", function(){
     runQuiz()
 });
 
-// create quiz timer variable
-var timer = 40;
+// create quiz timer variable and initial value - used for % remaining calc
+var initialTime = 40;
+var timer = initialTime;
 
 // create variable to hold current question number
 var questionNumber = 0;
@@ -69,7 +71,7 @@ function runQuiz() {
     displayQuestion(questionNumber);
 
     //set initial time on timer
-    displayTimerDiv.textContent = timer;
+    displayTimerDiv.textContent = formatTime();
 
     //begin timer set interval to 1s and run for 40s
     quizLoop = setInterval(() => {
@@ -77,9 +79,11 @@ function runQuiz() {
         //decrease timer by 1s each loop
         timer--;
 
+        pathRemaining.style.stroke = getColor();
+
         //show timer value on screen
-        displayTimerDiv.textContent = timer;
-        
+        displayTimerDiv.textContent = formatTime();
+        setCircleDashArray();
         //end timer at 0
         if (timer <= 0) {
             clearInterval(quizLoop);
@@ -134,6 +138,7 @@ function answerQuestion(answerNumber) {
     if (answerNumber !== questions[questionNumber].correctResponse) {
         //answer is incorrect - deduct 10s from timer
         timer -= 10;
+        pathRemaining.style.stroke = "red";
     }
 
     //move to next question
@@ -166,17 +171,25 @@ function showScoreScreen() {
     saveUser();
 }
 
+// save score to local storage
 function saveUser(){
+    // prompt user for name
     var initials = prompt("You earned a high score! Enter your initials!");
+    
+    // create score object
     var score = {
         "initials": initials,
         "score": timer,
         "date": Date()
     }
+
+    // get previous scores from local storage and place in array or use empty array
     var scores = JSON.parse(localStorage.getItem("scores")) || [];
-    
+
+    // add current score to score array
     scores.push(score);
     
+    // sort score array by score value 
     scores.sort((a,b) => {
         if(a.score <  b.score){
             return 1
@@ -189,25 +202,83 @@ function saveUser(){
 
     console.log(scores);
 
+    // save latest score to local storage for special styling
     localStorage.setItem("latestScore", JSON.stringify(score));
+    // save score list to local storage
     localStorage.setItem("scores", JSON.stringify(scores));
-    
+         
     displayScores();
 }
 
+// display score list after quiz
 function displayScores(){
+    // get recent score and score list from local storage
     var scores = JSON.parse(localStorage.getItem("scores"));
     var latestScore = JSON.parse(localStorage.getItem("latestScore"));
     
+    // loop through scores and place in ol
     var scoreList = document.createElement("ol");    
     for(var i=0; i<scores.length; i++){
         var score = document.createElement("li");
+
+        // test if score is from quiz just taken then add class if so
         if(scores[i].date === latestScore.date){
             score.setAttribute("class", "yourScore");
         }
         score.textContent = scores[i].initials + " " + scores[i].score;
         scoreList.appendChild(score);
     }
+
+    // add score ol to page
     displayQuestionDiv.appendChild(scoreList);
 
 }
+
+//==================================================================
+// timer animation functions
+// =================================================================
+
+// format seconds int to  MM:SS string
+function formatTime(){
+
+    // get whole minutes
+    var minutes = Math.floor(timer/60);
+
+    // get remaining seconds
+    var seconds = timer%60;
+
+    // add leading "0"s
+    if(seconds < 10){
+        seconds = "0" + seconds;
+    }
+
+    return minutes + ":" + seconds;
+}
+
+// sets length of timing circle
+function setCircleDashArray(){
+    var circleDasharray = `${(
+        (timer/initialTime) * 283
+      ).toFixed(0)} 283`;
+      document.getElementById("path-remaining").setAttribute("stroke-dasharray", circleDasharray);
+}
+
+function getColor(){
+    var red = 0;
+    var green = 255;
+
+    if(timer/initialTime >= 0.5){
+        red = ((initialTime - timer)*2/initialTime) * 255
+    }
+    else{
+        red=255;
+        green = (green * timer * 2) /initialTime;
+    }
+    if(red>255){
+        red=255;
+    }
+
+    return `rgba(${red}, ${green}, 0)`;
+}
+
+// fade green 

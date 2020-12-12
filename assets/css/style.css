@@ -2,3 +2,35 @@
     background-color: red;
     font-weight: 900;
 }
+
+#timer{
+    position: relative;
+    height: 300px;
+    width: 300px;
+    border: 2px solid black;
+}
+
+#timer-circle{
+    fill: none;
+    stroke: none;
+}
+
+#timer-path-elapsed{
+    stroke-width: 7px;
+    stroke: gray;
+}
+
+#timer-text{
+    font-size: 50px;
+    position: absolute;
+    top: 110px;
+    left: 100px;
+}
+
+#path-remaining{
+    stroke-width: 7px;
+    stroke-linecap: round;
+    transform: rotate(90deg);
+    transform-origin: center;
+    stroke: rgb(0,255,0);
+}

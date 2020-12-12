@@ -13,7 +13,20 @@
 </head>
 
 <body>
-    <div id="timer"></div>
+    <div id="timer">
+        <svg id="timer-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <g id="timer-circle">           
+                <path id="path-remaining" stroke-dasharray="283"
+                    d="
+                        M 50, 50
+                        m -45, 0
+                        a 45,45 0 1,0 90,0
+                        a 45,45 0 1,0 -90,0
+                    "></path>
+            </g>
+        </svg>
+        <span id="timer-text"></span>
+    </div>
     <div id="question">
         <h1>Monty Python Quiz</h1>
         <p>
