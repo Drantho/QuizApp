@@ -162,4 +162,52 @@ function showScoreScreen() {
     displayQuestionDiv.appendChild(scoreDisplay);
 
     //TODO save score and display high scores
+
+    saveUser();
+}
+
+function saveUser(){
+    var initials = prompt("You earned a high score! Enter your initials!");
+    var score = {
+        "initials": initials,
+        "score": timer,
+        "date": Date()
+    }
+    var scores = JSON.parse(localStorage.getItem("scores")) || [];
+    
+    scores.push(score);
+    
+    scores.sort((a,b) => {
+        if(a.score <  b.score){
+            return 1
+        } else if(a.score > b.score){
+            return -1
+        }
+        return 0;
+
+    })
+
+    console.log(scores);
+
+    localStorage.setItem("latestScore", JSON.stringify(score));
+    localStorage.setItem("scores", JSON.stringify(scores));
+    
+    displayScores();
+}
+
+function displayScores(){
+    var scores = JSON.parse(localStorage.getItem("scores"));
+    var latestScore = JSON.parse(localStorage.getItem("latestScore"));
+    
+    var scoreList = document.createElement("ol");    
+    for(var i=0; i<scores.length; i++){
+        var score = document.createElement("li");
+        if(scores[i].date === latestScore.date){
+            score.setAttribute("class", "yourScore");
+        }
+        score.textContent = scores[i].initials + " " + scores[i].score;
+        scoreList.appendChild(score);
+    }
+    displayQuestionDiv.appendChild(scoreList);
+
 }
