@@ -7,7 +7,7 @@
     position: relative;
     height: 300px;
     width: 300px;
-    border: 2px solid black;
+    display: none;
 }
 
 #timer-circle{
@@ -32,5 +32,9 @@
     stroke-linecap: round;
     transform: rotate(90deg);
     transform-origin: center;
-    stroke: rgb(0,255,0);
+    stroke: rgb(0,255,0);    
+}
+
+#scoreDiv{
+    display: none;
 }

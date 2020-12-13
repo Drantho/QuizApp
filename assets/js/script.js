@@ -46,13 +46,19 @@ var questions = [
 var quizLoop;
 
 // declare html element variables
+var timerContainer = document.querySelector("#timer");
+var welcomeDiv = document.querySelector("#welcomeDiv");
 var displayTimerDiv = document.querySelector("#timer-text");
-var displayQuestionDiv = document.querySelector("#question");
+var questionDiv = document.querySelector("#question");    
+var scoreDiv = document.querySelector("#scoreDiv");
 var startBtn = document.querySelector("#startBtn");
 var pathRemaining = document.querySelector("#path-remaining");
+var retryBtn = document.querySelector("#retryBtn");
+var scoreList = document.querySelector("#scoreList");
 
 // declare event listener to begin quiz
 startBtn.addEventListener("click", runQuiz);
+retryBtn.addEventListener("click", retryQuiz);
 
 
 // create quiz timer variable and initial value - used for % remaining calc
@@ -66,6 +72,14 @@ var questionNumber = 0;
 function runQuiz() {
     console.log("runQuiz() fires");
 
+    // hide welcome and score divs
+    welcomeDiv.style.display = "none";
+    scoreDiv.style.display = "none";
+
+    // show timer and question divs
+    timerContainer.style.display = "block";
+    questionDiv.style.display = "block"
+
     //ask first question
     displayQuestion(questionNumber);
 
@@ -77,7 +91,7 @@ function runQuiz() {
 
         //decrease timer by 1s each loop
         timer--;
-
+        
         pathRemaining.style.stroke = getColor();
 
         //show timer value on screen
@@ -97,7 +111,7 @@ function displayQuestion(questionNumber) {
     console.log(`displayQuestion(${questionNumber}) fires.`);
 
     //clear contents of question div
-    displayQuestionDiv.innerHTML = "";
+    questionDiv.innerHTML = "";
 
     //only attempt to add question if question exists and timer remains on the timer
     if (questionNumber < questions.length && timer > 0) {
@@ -105,7 +119,7 @@ function displayQuestion(questionNumber) {
         //add current question to screen
         var newQuestion = document.createElement("h2");
         newQuestion.textContent = questions[questionNumber].text;
-        displayQuestionDiv.appendChild(newQuestion);
+        questionDiv.appendChild(newQuestion);
 
         //loop through possible responses and display a button for each
         for (var i = 0; i < questions[questionNumber].responses.length; i++) {
@@ -114,7 +128,7 @@ function displayQuestion(questionNumber) {
 
             //button will send response number as argument to answerQuestion()
             newButton.setAttribute("onclick", "answerQuestion(" + i + ")");
-            displayQuestionDiv.appendChild(newButton);
+            questionDiv.appendChild(newButton);
         }
 
     }
@@ -156,6 +170,8 @@ function answerQuestion(answerNumber) {
 function showScoreScreen() {
     console.log("showScoreScreen() fires");
 
+    timerContainer.style.display = "none";
+
     // ensure no negative times
     if (timer < 0) {
         timer = 0;
@@ -164,15 +180,17 @@ function showScoreScreen() {
     // ensure timer/ score screen is correc at end;
     setCircleDashArray();
 
-    //clear timer display and question display
-    displayTimerDiv.innerHTML = "";
-    displayQuestionDiv.innerHTML = "";
+    //hide question and timer divs
+    questionDiv.style.display = "none";
+    displayTimerDiv.style.display = "none";  
+    
+    // show score div
+    scoreDiv.style.display = "block";
 
     //create score element and display
     var scoreDisplay = document.createElement("h1");
     scoreDisplay.textContent = "You scored " + timer + "!";
-    displayQuestionDiv.appendChild(scoreDisplay);
-
+    questionDiv.appendChild(scoreDisplay);
 
     saveUser();
 }
@@ -234,8 +252,7 @@ function displayScores(testScore) {
     // get score list from local storage
     var scores = JSON.parse(localStorage.getItem("scores"));
 
-    // loop through scores and place in ol
-    var scoreList = document.createElement("ol");
+    // loop through scores and place in ol    
     for (var i = 0; i < scores.length; i++) {
         var score = document.createElement("li");
 
@@ -248,20 +265,13 @@ function displayScores(testScore) {
         scoreList.appendChild(score);
     }
 
-    // add score ol to page
-    displayQuestionDiv.appendChild(scoreList);
-
-    // add button to retry quiz
-    var retryBtn = document.createElement("button");
-    retryBtn.textContent = "Try Again!";
-    retryBtn.addEventListener("click", retryQuiz);
-    displayQuestionDiv.appendChild(retryBtn);
-
 }
 
 function retryQuiz(){
     questionNumber = 0;
     timer = initialTime;
+    setCircleDashArray();
+    pathRemaining.style.stroke = getColor();
     runQuiz();    
 }
 
