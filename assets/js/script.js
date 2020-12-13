@@ -51,10 +51,9 @@ var displayQuestionDiv = document.querySelector("#question");
 var startBtn = document.querySelector("#startBtn");
 var pathRemaining = document.querySelector("#path-remaining");
 
-// declare event lister to begin quiz
-startBtn.addEventListener("click", function(){
-    runQuiz()
-});
+// declare event listener to begin quiz
+startBtn.addEventListener("click", runQuiz);
+
 
 // create quiz timer variable and initial value - used for % remaining calc
 var initialTime = 40;
@@ -74,7 +73,7 @@ function runQuiz() {
     displayTimerDiv.textContent = formatTime();
 
     //begin timer set interval to 1s and run for 40s
-    quizLoop = setInterval(() => {
+    quizLoop = setInterval(function() {
 
         //decrease timer by 1s each loop
         timer--;
@@ -84,8 +83,8 @@ function runQuiz() {
         //show timer value on screen
         displayTimerDiv.textContent = formatTime();
         setCircleDashArray();
-        //end timer at 0
-        if (timer <= 0) {
+        //end timer at -1 to show 00:00
+        if (timer < 0) {
             clearInterval(quizLoop);
             showScoreScreen();
         }
@@ -137,7 +136,12 @@ function answerQuestion(answerNumber) {
     //compare user answer to correct answer
     if (answerNumber !== questions[questionNumber].correctResponse) {
         //answer is incorrect - deduct 10s from timer
-        timer -= 10;
+        if (timer >= 10) {
+            timer -= 10;
+        } else {
+            timer = 0;
+        }
+        // make timing circle flash red
         pathRemaining.style.stroke = "red";
     }
 
@@ -152,10 +156,13 @@ function answerQuestion(answerNumber) {
 function showScoreScreen() {
     console.log("showScoreScreen() fires");
 
-    //if score is < 0 set to 0
-    if(timer < 0){
+    // ensure no negative times
+    if (timer < 0) {
         timer = 0;
     }
+
+    // ensure timer/ score screen is correc at end;
+    setCircleDashArray();
 
     //clear timer display and question display
     displayTimerDiv.innerHTML = "";
@@ -166,63 +173,75 @@ function showScoreScreen() {
     scoreDisplay.textContent = "You scored " + timer + "!";
     displayQuestionDiv.appendChild(scoreDisplay);
 
-    //TODO save score and display high scores
 
     saveUser();
 }
 
 // save score to local storage
-function saveUser(){
-    // prompt user for name
-    var initials = prompt("You earned a high score! Enter your initials!");
-    
-    // create score object
-    var score = {
-        "initials": initials,
-        "score": timer,
-        "date": Date()
-    }
+function saveUser() {
 
     // get previous scores from local storage and place in array or use empty array
     var scores = JSON.parse(localStorage.getItem("scores")) || [];
 
-    // add current score to score array
-    scores.push(score);
-    
-    // sort score array by score value 
-    scores.sort((a,b) => {
-        if(a.score <  b.score){
-            return 1
-        } else if(a.score > b.score){
-            return -1
+    // create score object
+    var score = {
+        "score": timer,
+        "date": Date()
+    }
+
+    if ((scores.length >= 10 && score.score > scores[9].score) || (scores.length < 10)) {
+
+        // prompt user for name
+        score.initials = prompt("You earned a high score! Enter your initials!");
+
+        // add current score to score array
+        scores.push(score);
+
+        // sort score array by score value 
+        scores.sort((a, b) => {
+            if (a.score < b.score) {
+                return 1
+            } else if (a.score > b.score) {
+                return -1
+            }
+            return 0;
+
+        })
+
+        if(scores.length > 10){
+            scores.splice(10, 1);
         }
-        return 0;
 
-    })
+        console.log(scores);
 
-    console.log(scores);
+        // save latest score to local storage for special styling
+        localStorage.setItem("latestScore", JSON.stringify(score));
+        // save score list to local storage
+        localStorage.setItem("scores", JSON.stringify(scores));
 
-    // save latest score to local storage for special styling
-    localStorage.setItem("latestScore", JSON.stringify(score));
-    // save score list to local storage
-    localStorage.setItem("scores", JSON.stringify(scores));
-         
-    displayScores();
+    }
+    else{
+        alert("you didn't make the high score list. Try harder next time!");
+    }
+    displayScores(score);
 }
 
 // display score list after quiz
-function displayScores(){
-    // get recent score and score list from local storage
+function displayScores(testScore) {
+
+    console.log(`displayScores(${testScore}) fires`)
+    console.log("testScore: ", testScore);
+    // get score list from local storage
     var scores = JSON.parse(localStorage.getItem("scores"));
-    var latestScore = JSON.parse(localStorage.getItem("latestScore"));
-    
+
     // loop through scores and place in ol
-    var scoreList = document.createElement("ol");    
-    for(var i=0; i<scores.length; i++){
+    var scoreList = document.createElement("ol");
+    for (var i = 0; i < scores.length; i++) {
         var score = document.createElement("li");
 
+        console.log(`testScore.date: ${testScore.date} ?= scores[${i}].date: ${scores[i].date}`);
         // test if score is from quiz just taken then add class if so
-        if(scores[i].date === latestScore.date){
+        if (scores[i].date === testScore.date) {
             score.setAttribute("class", "yourScore");
         }
         score.textContent = scores[i].initials + " " + scores[i].score;
@@ -232,6 +251,18 @@ function displayScores(){
     // add score ol to page
     displayQuestionDiv.appendChild(scoreList);
 
+    // add button to retry quiz
+    var retryBtn = document.createElement("button");
+    retryBtn.textContent = "Try Again!";
+    retryBtn.addEventListener("click", retryQuiz);
+    displayQuestionDiv.appendChild(retryBtn);
+
+}
+
+function retryQuiz(){
+    questionNumber = 0;
+    timer = initialTime;
+    runQuiz();    
 }
 
 //==================================================================
@@ -239,16 +270,16 @@ function displayScores(){
 // =================================================================
 
 // format seconds int to  MM:SS string
-function formatTime(){
+function formatTime() {
 
     // get whole minutes
-    var minutes = Math.floor(timer/60);
+    var minutes = Math.floor(timer / 60);
 
     // get remaining seconds
-    var seconds = timer%60;
+    var seconds = timer % 60;
 
     // add leading "0"s
-    if(seconds < 10){
+    if (seconds < 10) {
         seconds = "0" + seconds;
     }
 
@@ -256,26 +287,31 @@ function formatTime(){
 }
 
 // sets length of timing circle
-function setCircleDashArray(){
+function setCircleDashArray() {
     var circleDasharray = `${(
-        (timer/initialTime) * 283
-      ).toFixed(0)} 283`;
-      document.getElementById("path-remaining").setAttribute("stroke-dasharray", circleDasharray);
+        (timer / initialTime) * 283
+    ).toFixed(0)} 283`;
+    document.getElementById("path-remaining").setAttribute("stroke-dasharray", circleDasharray);
 }
 
-function getColor(){
+// makes timing circle fade from green to red through yellow
+function getColor() {
+    // set initial color values
     var red = 0;
     var green = 255;
 
-    if(timer/initialTime >= 0.5){
-        red = ((initialTime - timer)*2/initialTime) * 255
+    // set formulas for later
+    var ratioTimeLeft = timer / initialTime;
+    var ratioTimeElapsed = 1 - ratioTimeLeft;
+
+    // if time elapsed is < 50% increase red 
+    if (ratioTimeElapsed <= 0.5) {
+        red = ratioTimeElapsed * 2 * 255;
     }
-    else{
-        red=255;
-        green = (green * timer * 2) /initialTime;
-    }
-    if(red>255){
-        red=255;
+    // reduce green
+    else {
+        red = 255;
+        green = (ratioTimeLeft * 2) * 255
     }
 
     return `rgba(${red}, ${green}, 0)`;
