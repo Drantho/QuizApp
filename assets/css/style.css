@@ -1,33 +1,66 @@
+body{
+    background-color: black;
+    color: white !important;
+    min-width: 400px;
+}
+
 .yourScore{
-    background-color: red;
+    border: 2px solid white;
     font-weight: 900;
 }
 
+#welcomeDiv{
+    margin-top: 50px;
+    padding: 50px 150px;
+    color: white;
+}
+#welcomeDiv h1{
+    margin: 25px 0 45px 0;
+}
+
+#welcomeDiv p{
+    font-size: 20pt;
+}
+
+#welcomeDiv button{
+    margin: 45px auto 0 auto;
+    display: block;
+}
+
+#imageDiv img{
+    width: 98%;
+    margin: auto;
+} 
+
 #timer{
     position: relative;
+    margin: 90px 0 0 0;
     height: 300px;
     width: 300px;
     display: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.8);
 }
 
-#timer-circle{
+#timerCircle{
     fill: none;
     stroke: none;
 }
 
-#timer-path-elapsed{
+#timerPathElapsed{
     stroke-width: 7px;
     stroke: gray;
 }
 
-#timer-text{
+#timerText{
     font-size: 50px;
     position: absolute;
     top: 110px;
     left: 100px;
+    color: white;
 }
 
-#path-remaining{
+#pathRemaining{
     stroke-width: 7px;
     stroke-linecap: round;
     transform: rotate(90deg);
@@ -37,4 +70,65 @@
 
 #scoreDiv{
     display: none;
+    position: relative;
+    top: -100px;
+    width: 100%;
+}
+
+#question{
+    color: white;
+}
+
+#questionRow{
+    margin: 10% 0 0 0;
+}
+
+.answerBtn{
+    cursor: pointer;
+    padding: 15px 25px;
+    margin: 5px auto;
+    box-sizing: border-box;
+    font-size: 1.5em;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 5px;
+}
+
+.answerBtn:hover{
+    border: 4px solid white;
+    margin: 1px auto;
+}
+
+.questionText{
+    font-size: 3em;
+}
+
+h2{
+    font-size: 3em;
+    color: white;
+}
+
+.highScore{
+    padding: 8px 25px;
+    margin: 5px auto;
+    box-sizing: border-box;
+    font-size: 1.3em;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 5px;
+    width: 500px;
+}
+
+#retryBtn{
+    display: block;
+    margin: auto;
+}
+
+/* polish css for small screens */
+@media only screen and (max-width: 1015px) {
+    #timer{
+        margin: auto;
+    }
+
+    #question{
+        width: 100%;
+    }
 }

@@ -48,18 +48,17 @@ var quizLoop;
 // declare html element variables
 var timerContainer = document.querySelector("#timer");
 var welcomeDiv = document.querySelector("#welcomeDiv");
-var displayTimerDiv = document.querySelector("#timer-text");
+var displayTimerDiv = document.querySelector("#timerText");
 var questionDiv = document.querySelector("#question");    
 var scoreDiv = document.querySelector("#scoreDiv");
 var startBtn = document.querySelector("#startBtn");
-var pathRemaining = document.querySelector("#path-remaining");
+var pathRemaining = document.querySelector("#pathRemaining");
 var retryBtn = document.querySelector("#retryBtn");
 var scoreList = document.querySelector("#scoreList");
 
 // declare event listener to begin quiz
 startBtn.addEventListener("click", runQuiz);
 retryBtn.addEventListener("click", retryQuiz);
-
 
 // create quiz timer variable and initial value - used for % remaining calc
 var initialTime = 40;
@@ -119,12 +118,14 @@ function displayQuestion(questionNumber) {
         //add current question to screen
         var newQuestion = document.createElement("h2");
         newQuestion.textContent = questions[questionNumber].text;
+        newQuestion.setAttribute("class", "question-text");
         questionDiv.appendChild(newQuestion);
 
         //loop through possible responses and display a button for each
         for (var i = 0; i < questions[questionNumber].responses.length; i++) {
-            var newButton = document.createElement("button");
+            var newButton = document.createElement("div");
             newButton.textContent = questions[questionNumber].responses[i];
+            newButton.setAttribute("class", "answerBtn")
 
             //button will send response number as argument to answerQuestion()
             newButton.setAttribute("onclick", "answerQuestion(" + i + ")");
@@ -180,7 +181,7 @@ function showScoreScreen() {
     // ensure timer/ score screen is correc at end;
     setCircleDashArray();
 
-    //hide question and timer divs
+    //hide question and timer div
     questionDiv.style.display = "none";
     displayTimerDiv.style.display = "none";  
     
@@ -248,25 +249,34 @@ function saveUser() {
 function displayScores(testScore) {
 
     console.log(`displayScores(${testScore}) fires`)
-    console.log("testScore: ", testScore);
+    // console.log("testScore: ", testScore);
+    
+    scoreList.innerHTML = "";
+    
     // get score list from local storage
     var scores = JSON.parse(localStorage.getItem("scores"));
 
     // loop through scores and place in ol    
     for (var i = 0; i < scores.length; i++) {
-        var score = document.createElement("li");
+        var score = document.createElement("div");
+        score.setAttribute("Class", "highScore");
 
-        console.log(`testScore.date: ${testScore.date} ?= scores[${i}].date: ${scores[i].date}`);
-        // test if score is from quiz just taken then add class if so
+        // console.log(`testScore.date: ${testScore.date} ?= scores[${i}].date: ${scores[i].date}`);
+
+        // set text to score
+        score.textContent = `${i+1}. ${scores[i].initials}  ${scores[i].score}`;
+
+        // test if score is from quiz just taken then add class and message if so
         if (scores[i].date === testScore.date) {
-            score.setAttribute("class", "yourScore");
+            score.setAttribute("class", "highScore yourScore");
+            score.textContent += " - your score!";
         }
-        score.textContent = scores[i].initials + " " + scores[i].score;
         scoreList.appendChild(score);
     }
 
 }
 
+// reset variables to initial values and call functions to begin quiz
 function retryQuiz(){
     questionNumber = 0;
     timer = initialTime;
@@ -298,10 +308,11 @@ function formatTime() {
 
 // sets length of timing circle
 function setCircleDashArray() {
-    var circleDasharray = `${(
-        (timer / initialTime) * 283
-    ).toFixed(0)} 283`;
-    document.getElementById("path-remaining").setAttribute("stroke-dasharray", circleDasharray);
+    // set stroke-dasharray equal to the ration of time remaining/initial time
+
+    // circumference of circle = 2* pi * r(45px) = 283
+    var circleDasharray = `${((timer / initialTime) * 283).toFixed(0)} 283`;
+    document.getElementById("pathRemaining").setAttribute("stroke-dasharray", circleDasharray);
 }
 
 // makes timing circle fade from green to red through yellow
@@ -326,5 +337,3 @@ function getColor() {
 
     return `rgba(${red}, ${green}, 0)`;
 }
-
-// fade green 

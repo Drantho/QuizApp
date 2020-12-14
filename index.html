@@ -13,33 +13,58 @@
 </head>
 
 <body>
-    <div id="welcomeDiv">
-        <h1>Monty Python Quiz</h1>
-        <p>
-            Are you ready for a timed Monty Python quiz? You have 40 seconds to complete this quiz. You will be deducted
-            10s for each wrong answer. How fast*smart are you?
-        </p>
-        <button id="startBtn">Begin</button>
+    <div class="container-fluid">
+        <div class="row" id="welcomeDiv">
+            <div class="col-md-12">
+                <div>
+                    <h1 class="text-center">Monty Python Quiz</h1>
+                    <p>
+                        Are you ready for a timed Monty Python quiz? You have 40 seconds to complete this quiz. You will
+                        be
+                        deducted
+                        10s for each wrong answer. How fast*smart are you?
+                    </p>
+                    <button id="startBtn" class="btn btn-primary">Begin</button>
+
+                </div>
+            
+                <div id="imageDiv">
+                    <img src="assets/images/bg04.png" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="row" id="questionRow">
+            <div class="col-md-4" id="timer">
+                <svg id="timerSvg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <g id="timerCircle">
+                        <path id="pathRemaining" stroke-dasharray="283" d="
+                                    M 50, 50
+                                    m -45, 0
+                                    a 45,45 0 1,0 90,0
+                                    a 45,45 0 1,0 -90,0
+                                "></path>
+                    </g>
+                </svg>
+                <span id="timerText">0:40</span>
+            </div>
+            <div class="col-md-8" id="question">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div id="scoreDiv">
+                    <h2 class="text-center">High Scores</h2>
+                    <div id="scoreList"></div>
+                    <button id="retryBtn" class="btn btn-primary">Retry Quiz</button>
+                </div>
+            </div>
+        </div>
+
+
+
+
     </div>
-    <div id="timer">
-        <svg id="timer-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <g id="timer-circle">
-                <path id="path-remaining" stroke-dasharray="283" d="
-                        M 50, 50
-                        m -45, 0
-                        a 45,45 0 1,0 90,0
-                        a 45,45 0 1,0 -90,0
-                    "></path>
-            </g>
-        </svg>
-        <span id="timer-text"></span>
-    </div>
-    <div id="question">
-        
-    </div>
-    <div id="scoreDiv">
-        <ol id="scoreList"></ol>
-        <button id="retryBtn">Retry Quiz</button>
+
     </div>
 
 
