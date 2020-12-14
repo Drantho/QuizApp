@@ -61,6 +61,26 @@ var questions = [
             "Crunchy Frog"
         ],
         correctResponse: 1
+    },
+    {
+        text: "What flavor is an albatross?",
+        responses: [
+            "Chocolate",
+            "Strawberry",
+            "Vanilla",
+            "Albatross"
+        ],
+        correctResponse: 3
+    },
+    {
+        text: "What is an argument?",
+        responses: [
+            "Just contradiction",
+            "The automatic gainsay of what the other person says",
+            "A series of connected statements intended to establish a position",
+            "A value passed to a function"
+        ],
+        correctResponse: 2
     }
 ];
 

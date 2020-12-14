@@ -23,7 +23,7 @@ body{
 }
 
 #welcomeDiv p{
-    font-size: 20pt;
+    font-size: 1.5em;
 }
 
 #welcomeDiv button{
@@ -134,5 +134,48 @@ h2{
 
     #question{
         width: 100%;
+    }
+}
+
+
+/* reduce text sizes and padding on small screens */
+@media only screen and (max-width: 768px) {
+    #timer{
+        margin: auto;
+    }
+
+    #question{
+        width: 100%;
+    }
+
+    #welcomeDiv{
+        margin-top: 0;
+        padding: 0 50px;
+    }
+
+    #welcomeDiv p{
+        font-size: 1em;
+    }
+    
+    #welcomeDiv button{
+        margin: 45px auto;
+        display: block;
+    }
+    
+    h2{
+        font-size: 1.5em;
+    }
+
+    .answerBtn{
+        font-size: 1em;
+    }
+
+    .highScore{
+        font-size: 1em;
+    }
+
+    #scoreDiv{
+        position: relative;
+        top: 0;
     }
 }
