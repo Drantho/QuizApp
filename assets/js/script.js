@@ -39,6 +39,28 @@ var questions = [
             "3x10^8 m/s"
         ],
         correctResponse: 2
+    },
+    {
+        text: "Where does the Wizzo Chocolate Company source its crunchy frogs?",
+        responses: [
+            "Northumbria",
+            "Sweden",
+            "Iraq",
+            "Brazil"
+        ],
+        correctResponse: 2
+    },
+    {
+        text: "Which of Wizzo's chocolates were 'extremely nasty' but not prosecutable?",
+        responses: [
+            "Spring Surprise",
+            "Cherry Fondant",
+            "Rams' Bladder Cup",
+            "Cockroach Cluster",
+            "Anthrax Ripple",
+            "Crunchy Frog"
+        ],
+        correctResponse: 1
     }
 ];
 
@@ -55,14 +77,19 @@ var startBtn = document.querySelector("#startBtn");
 var pathRemaining = document.querySelector("#pathRemaining");
 var retryBtn = document.querySelector("#retryBtn");
 var scoreList = document.querySelector("#scoreList");
+var welcomeTimeMessage = document.querySelector("#welcomeTimeMessage");
+var quizLengthMessage = document.querySelector("#quizLengthMessage");
 
 // declare event listener to begin quiz
 startBtn.addEventListener("click", runQuiz);
 retryBtn.addEventListener("click", retryQuiz);
 
 // create quiz timer variable and initial value - used for % remaining calc
-var initialTime = 40;
+var initialTime = questions.length * 10;
 var timer = initialTime;
+
+welcomeTimeMessage.textContent = formatTime();
+quizLengthMessage.textContent = questions.length;
 
 // create variable to hold current question number
 var questionNumber = 0;
@@ -95,6 +122,8 @@ function runQuiz() {
 
         //show timer value on screen
         displayTimerDiv.textContent = formatTime();
+        timerContainer.style.backgroundColor = "black";
+
         setCircleDashArray();
         //end timer at -1 to show 00:00
         if (timer < 0) {
@@ -158,6 +187,10 @@ function answerQuestion(answerNumber) {
         }
         // make timing circle flash red
         pathRemaining.style.stroke = "red";
+        timerContainer.style.backgroundColor = "red";
+    }
+    else{
+        timerContainer.style.backgroundColor = "rgb(0, 255, 0)";
     }
 
     //move to next question
@@ -280,8 +313,10 @@ function displayScores(testScore) {
 function retryQuiz(){
     questionNumber = 0;
     timer = initialTime;
+    displayTimerDiv.style.display = "block";
     setCircleDashArray();
     pathRemaining.style.stroke = getColor();
+    timerContainer.style.backgroundColor = "black";
     runQuiz();    
 }
 
