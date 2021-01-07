@@ -20,6 +20,10 @@ This app features a timed quiz. The user is presented with a series of Monty Pyt
 - User's score is highlighted if they made it on the list.
 - Retry button.
 -------------------------------------------------------------------------------------------------------------------------------
+
+## Contact
+contact me at mitchellanthonyd@gmail.com
+-------------------------------------------------------------------------------------------------------------------------------------------------
 ## Screen shots
 
 
